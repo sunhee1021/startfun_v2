@@ -57,4 +57,49 @@
 
 ## WebSocket
 ![websocket](https://user-images.githubusercontent.com/78418562/125291540-7b4be580-e35c-11eb-9d67-125ca3993447.gif)
-> 실시간 채팅 및 실시간 알림 기능  
+> 펀딩 진행 시 스타터와 스펀서간의 원활한 소통을 위해 웹소켓을 통한 실시간 채팅 및 알림 기능을 구현하였습니다. <br>
+##### (HandshakeInterceptor를 통해 회원 이메일을 저장하고, textWebSocketHandler에 로그인 한 멤버 세션 리스트 · 해당 세션이 가지고 있는 방번호 리스트 · 채팅 방 리스트 총 세가지의 concurrentHashMap을 생성하여 세션을 관리한다.)
+
+## Trigger
+```sql
+drop trigger if exists project_deleteTrg;
+create trigger project_deleteTrg
+before delete
+on project
+for each row
+begin
+if old.project_type='후원' then
+delete from reward where project_no=old.project_no;
+delete from support where project_no=old.project_no;
+else
+delete from invest where project_no=old.project_no;
+end if;
+end;
+```
+> 프로젝트를 개설하면 참조하는 연관테이블들이 함께 생성되는데, 프로젝트 삭제시에도 invest · support · reward 함께 삭제되도록 트리거를 구현하였습니다.
+
+#### 구현된 트리거
+* 공지사항 delete하면 해당 글의 댓글도 delete되는 트리거
+* project를 delete하면 invest,support,reward도 delete되는 트리거
+* 팔로잉하면 팔로워에도 insert 되는 트리거
+* 팔로잉 취소하면 팔로워에도 delete 되는 트리거
+
+## Mybatis - Dynamic query
+![list](https://user-images.githubusercontent.com/78418562/125294432-37a6ab00-e35f-11eb-8e85-256e281f7add.gif)
+```sql
+....
+<choose>
+  <when test="listSort == 'total'">done desc, total desc</when>                     
+  <when test="listSort == 'project_end'">done desc, p.project_end desc, dday</when>        
+  <when test="listSort == 'project_start'">done desc, p.project_start desc</when>   
+  <when test="listSort == 'sponsor_count'">done desc, sponsor_count desc</when> 
+  <otherwise>done desc, total desc</otherwise>        
+</choose>
+....
+```
+> 프로젝트 카테고리 분류 및 리스트 정렬을 위해 <choose>문을 사용해서 선택된 기준에 맞는 조건절을 찾아 리스트를 노출 시킬 수 있게 구현하였습니다.
+
+## AOP - Log
+![log](https://user-images.githubusercontent.com/78418562/125295489-3c1f9380-e360-11eb-89d6-aec629210f76.jpg)
+> 스타트펀 운영시 핵심이 되는 프로젝트 서비스 패키지를 모니터링 할 수 있도록 포인트컷으로 지정하여 
+패키지내 타켓메서드의 실행시간을 로그파일로 남기도록 구현하였습니다.

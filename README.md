@@ -71,8 +71,11 @@
 
 ## JavaMailSender | Velocity
 ![velocity](https://user-images.githubusercontent.com/78418562/125288526-35d9e900-e359-11eb-8a58-69228eb12ec3.jpg)
-> 회원가입 : 이메일 중복검사 후 인증번호 메일 발송<br>
+> 회원가입 : 이메일 중복검사 후 인증번호 메일 발송 <br>
 > 비밀번호 찾기 : 입력한 아이디(이메일)로 비밀번호 재설정 링크 메일 발송
+
+#### 회원가입 및 비밀번호 변경 시 Spring Security를 활용한 비밀번호 암호화 <br> 
+![security](https://user-images.githubusercontent.com/78418562/125316227-e43e5800-e372-11eb-9ba5-4a3c3969ad21.png)
 
 <br>
 

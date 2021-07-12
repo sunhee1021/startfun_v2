@@ -151,8 +151,8 @@ end;
 
 ## 스타트 펀 3가지 솔루션
 ![solution](https://user-images.githubusercontent.com/78418562/125309958-21075080-e36d-11eb-8a1a-e0f234f46153.jpg)
-> 리워드 품질이나 프로젝트 마감 후 사후 처리에 관한 제도가 미흡한 기존 플랫폼의 문제점을 해결하기 위한 스타트 펀만의 세 가지 솔루션을 구현하였습니다.
-#### 기존 플랫폼의 문제점을 개선하기 위한 스타트 펀만의 3가지 솔루션
+> 리워드 품질이나 프로젝트 마감 후 사후 처리에 관한 제도가 미흡한 기존 플랫폼의 문제점을 해결하기 위한 솔루션을 구현하였습니다.
+#### 스타트 펀만의 3가지 솔루션
 1. 프로젝트 신고 기능
 2. 관리자 정산 제도
 3. 후원가 평가 기능
@@ -174,4 +174,4 @@ end;
 <br>
 
 ## weis 팀원 소개
-#### [정수빈](https://github.com/soob312)(조장)  |  [이보희](https://github.com/lbhee)(부조장)  |  [박선희](https://github.com/sunhee1021)  |  [조하선](https://github.com/hasunzo)  |  [임나영](https://github.com/Lim-nayeong)  |  [이광희](https://github.com/Lee-Kwang-Hee)
+### [정수빈](https://github.com/soob312)(조장)  |  [이보희](https://github.com/lbhee)(부조장)  |  [박선희](https://github.com/sunhee1021)  |  [조하선](https://github.com/hasunzo)  |  [임나영](https://github.com/Lim-nayeong)  |  [이광희](https://github.com/Lee-Kwang-Hee)

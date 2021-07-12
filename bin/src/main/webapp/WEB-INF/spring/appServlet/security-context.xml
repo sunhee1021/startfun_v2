@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+ 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                     	http://www.springframework.org/schema/beans/spring-beans.xsd
+                     	http://www.springframework.org/schema/context
+					 	http://www.springframework.org/schema/context/spring-context.xsd
+					 	http://www.springframework.org/schema/mvc
+					 	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+  					 	http://www.springframework.org/schema/security 
+  					 	http://www.springframework.org/schema/security/spring-security.xsd
+  					 	http://www.springframework.org/schema/tx 
+  					 	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	<!-- security -->
+	<security:http auto-config="true">
+		<security:csrf disabled="true"/>
+<!-- 		<security:form-login default-target-url="/index.htm"
+							 login-page="/joinus/login.htm" 
+							 authentication-failure-url="/joinus/login.htm?error" />
+							 
+		<security:logout logout-success-url="/index.htm" />
+		
+		<security:intercept-url pattern="/customer/*Reg.htm" access="hasRole('ROLE_USER')" />
+		<security:intercept-url pattern="/customer/*Detail.htm" access="hasRole('ROLE_USER')" />
+		<security:intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		
+		<security:access-denied-handler error-page="/join/accessdenied.htm" /> -->
+	</security:http>
+	
+	<!-- 인증 관리 manager -->
+<!-- 	<security:authentication-manager>
+		<security:authentication-provider>
+			root-context에 DB 연결정보 injection
+			<security:jdbc-user-service data-source-ref="driverManagerDataSource" 
+				users-by-username-query="select userid, pwd as password, 1 enabled from member where userid=?"
+				authorities-by-username-query="select m.userid, r.role_name from member m join roll r on m.userid=r.userid where m.userid=?" />
+			비밀번호 암호화 (root context ref)
+			<security:password-encoder ref="bCryptPasswordEncoder"/>
+		</security:authentication-provider>
+	</security:authentication-manager> -->
+	
+	<!--  provider  -->
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:user-service>
+				<security:user name="admin" password="1004" authorities="ROLE_ADMIN"/>
+				<security:user name="user" password="1004" authorities="ROLE_USER"/>
+				<security:user name="com" password="1004" authorities="ROLE_COMPANY"/>
+			</security:user-service>
+		</security:authentication-provider>
+	</security:authentication-manager>
+</beans>

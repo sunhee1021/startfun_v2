@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+<configuration>
+	<!-- 별칭 -->
+	<typeAliases>
+		<typeAlias type="com.weis.startfun.admin.model.ReportCategoryVO" alias="ReportCategoryVO"/>
+		<typeAlias type="com.weis.startfun.admin.model.ReportVO" alias="ReportVO"/>
+		<typeAlias type="com.weis.startfun.member.model.FollowerVO" alias="FollowerVO"/>
+		<typeAlias type="com.weis.startfun.member.model.FollowingVO" alias="FollowingVO"/>
+		<typeAlias type="com.weis.startfun.member.model.AuthorityVO" alias="AuthorityVO"/>
+		<typeAlias type="com.weis.startfun.member.model.MemberAuthVO" alias="MemberAuthVO"/>
+		<typeAlias type="com.weis.startfun.member.model.MemberVO" alias="MemberVO"/>
+		<typeAlias type="com.weis.startfun.member.model.WishVO" alias="WishVO"/>
+		<typeAlias type="com.weis.startfun.notice.model.NoticeReplyVO" alias="NoticeReplyVO"/>
+		<typeAlias type="com.weis.startfun.notice.model.NoticeVO" alias="NoticeVO"/>
+		<typeAlias type="com.weis.startfun.project.model.InvestVO" alias="InvestVO"/>
+		<typeAlias type="com.weis.startfun.project.model.JoinInvestVO" alias="JoinInvestVO"/>
+		<typeAlias type="com.weis.startfun.project.model.JoinSupportVO" alias="JoinSupportVO"/>
+		<typeAlias type="com.weis.startfun.project.model.ProjectCategoryVO" alias="ProjectCategoryVO"/>
+		<typeAlias type="com.weis.startfun.project.model.ProjectNoticeVO" alias="ProjectNoticeVO"/>
+		<typeAlias type="com.weis.startfun.project.model.ProjectQnaVO" alias="ProjectQnaVO"/>
+		<typeAlias type="com.weis.startfun.project.model.ProjectVO" alias="ProjectVO"/>
+		<typeAlias type="com.weis.startfun.project.model.ReviewCategoryVO" alias="ReviewCategoryVO"/>
+		<typeAlias type="com.weis.startfun.project.model.ReviewVO" alias="ReviewVO"/>
+		<typeAlias type="com.weis.startfun.project.model.SupportVO" alias="SupportVO"/>
+		<typeAlias type="com.weis.startfun.project.model.RewardVO" alias="RewardVO"/>
+	</typeAliases>
+</configuration>

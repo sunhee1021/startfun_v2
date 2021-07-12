@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weis.startfun.chat.model.ChatDAO">
+
+<!-- 신규 채팅방일 때 채팅 방 생성하고 방번호 받아오기 -->
+<insert id="createChat" parameterType="com.weis.startfun.chat.model.ChatRoomVO">
+	INSERT INTO CHAT_ROOM (user_email, user_name, user_pic, master_email, master_name, master_pic, project_no)
+    VALUES (#{user_email}, #{user_name}, #{user_pic}, #{master_email}, #{master_name}, #{master_pic}, #{project_no});
+    <selectKey resultType="integer" keyProperty="room_id" order="AFTER">
+    	SELECT LAST_INSERT_ID()
+    </selectKey>
+</insert>
+
+<!-- 방 번호로 채팅방 선택 -->
+<select id="selectChatRoom" resultType="com.weis.startfun.chat.model.ChatRoomVO">
+	SELECT * FROM CHAT_ROOM
+	WHERE room_id = #{room_id}
+</select>
+
+<!-- 채팅 메세지 DB 저장 -->
+<insert id="insertMessage" parameterType="com.weis.startfun.chat.model.ChatMessageVO">
+	<if test="session_count == 1">
+		INSERT INTO CHAT_MESSAGE (room_id, message, name, email, unread_count) 
+		VALUES (#{room_id}, #{message}, #{name}, #{email}, 1)
+	</if>
+	<if test="session_count == 2">
+		INSERT INTO CHAT_MESSAGE (room_id, message, name, email, unread_count) 
+		VALUES (#{room_id}, #{message}, #{name}, #{email}, 0)
+	</if>
+</insert>
+
+<!-- 메세지 내용 -->
+<select id="messageList" resultType="com.weis.startfun.chat.model.ChatMessageVO">
+	SELECT room_id, 
+		   message_id, 
+		   message, name, 
+		   email, 
+		   unread_count, 
+		   session_count, 
+		   date_format(regtime, '%r') as regtime 
+	FROM CHAT_MESSAGE
+	WHERE room_id = #{room_id}
+</select>
+
+<!-- DB에 채팅 방 있는 지 확인 -->
+<select id="searchChatRoom" resultType="com.weis.startfun.chat.model.ChatRoomVO">
+	SELECT * FROM CHAT_ROOM
+	WHERE user_email = #{user_email} AND master_email = #{master_email} AND project_no = ${project_no}
+</select>
+
+<!-- chatRoomVO resultMap -->
+<resultMap type="com.weis.startfun.chat.model.ChatRoomVO" id="chatRoomListMap">
+	<result column="room_id" property="room_id"/>
+	<result column="user_email" property="user_email"/>
+	<result column="user_name" property="user_name"/>
+	<result column="user_pic" property="user_pic"/>
+	<result column="master_email" property="master_email"/>
+	<result column="master_name" property="master_name"/>
+	<result column="master_pic" property="master_pic"/>
+	<result column="unread_count" property="unread_count"/>
+	<result column="project_no" property="project_no"/>
+	<result column="project_title" property="project_title"/>
+	<result column="regtime" property="regtime"/>
+	<result column="member_company" property="member_company"/>
+	<result column="project_type" property="project_type"/>
+</resultMap>
+
+<!-- 채팅 방 리스트 출력 -->
+<select id="chatRoomList" resultMap="chatRoomListMap">
+	SELECT 	cr.room_id, 
+			cr.user_email, 
+			cr.user_name, 
+			cr.user_pic, 
+			cr.master_email, 
+			cr.master_name, 
+			cr.master_pic, 
+			cr.unread_count, 
+			cr.project_no, 
+			p.project_title,
+			p.project_type, 
+			cm.message as last_message,
+			date_format(cm.regtime, '%r') as regtime,
+			m.member_company
+	FROM CHAT_ROOM cr
+	JOIN 
+		(
+		select room_id, 
+		  	   message,
+		   	   regtime
+		from chat_message 
+		where message_id in 
+							(
+							select max(message_id) 
+							from chat_message 
+							group by room_id 
+							)
+		) cm
+	ON cr.room_id = cm.room_id 
+	JOIN project p
+	ON cr.project_no = p.project_no
+	JOIN member m
+	ON cr.master_email = m.member_email
+	WHERE 
+		  <choose>
+		  	<when test="type == 'master'">
+		  		master_email = #{email}
+		  	</when>
+		  	<when test="type == 'user'">
+		  		user_email = #{email}
+		  	</when>
+		  	<when test="type == 'all'">
+		  		master_email =#{email} or user_email =#{email}
+		  	</when>
+		  </choose>
+	GROUP BY cr.room_id 
+	ORDER BY cm.regtime desc
+</select>
+
+<!-- 읽지 않은 메세지 수 출력 -->
+<select id="selectUnReadCount" resultType="_int">
+	SELECT COUNT(*) FROM CHAT_MESSAGE
+	WHERE room_id = #{room_id} AND email != #{email} AND unread_count = 1
+</select>
+
+<!-- 읽은 메세지 숫자 0으로 바꾸기 -->
+<update id="updateCount" parameterType="com.weis.startfun.chat.model.ChatMessageVO">
+	UPDATE CHAT_MESSAGE
+	SET unread_count = 0
+	WHERE room_id = #{room_id} AND email != #{email} AND unread_count = 1
+</update>
+
+<!-- 읽지 않은 메세지 -->
+<select id="selectUnReadRoomCount" resultType="com.weis.startfun.chat.model.ChatRoomVO">
+   SELECT r.room_id, r.master_email
+      FROM chat_room r
+      INNER JOIN chat_message m
+      ON r.room_id = m.room_id
+      WHERE (m.unread_count = 1 and r.master_email = #{email} and m.email != #{email}) 
+         or (m.unread_count = 1 and r.user_email = #{email} and m.email != #{email})
+      GROUP BY r.room_id
+      ORDER BY r.room_id
+</select>
+
+
+</mapper>

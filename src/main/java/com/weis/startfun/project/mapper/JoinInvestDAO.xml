@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+설 명 : JoinInvest mapper 
+작성일 : 2021.06.08
+작성자 : 이보희 
+-->
+<mapper namespace="com.weis.startfun.project.model.JoinInvestDAO"> 
+
+	<!-- 투자형 프로젝트 리스트--> 
+	<resultMap type="ProjectVO" id="projectMap3">
+		<result property="project_no" column="project_no" />
+		<result property="project_thumbnail" column="project_thumbnail" />
+	    <result property="project_title" column="project_title" />
+	    <result property="project_start" column="project_start" />
+	    <result property="project_end" column="project_end" />
+	    <result property="project_status" column="project_status" />
+	    <result property="project_type" column="project_type" />
+	    <result property="sponsor_count" column="sponsor_count" />
+		<result property="dday" column="dday" />
+		<result property="total" column="total" />
+		<result property="rate" column="rate" />
+		<association property="memberVO" resultMap="memberMap3" />
+		<association property="projectCategoryVO" resultMap="projectCategoryMap3" />
+	</resultMap>
+	
+	<resultMap type="MemberVO" id="memberMap3">
+		<result property="member_name" column="member_name" />
+		<result property="member_profile" column="member_profile" />
+		<result property="member_company" column="member_company" />
+	</resultMap>
+	
+	<resultMap type="ProjectCategoryVO" id="projectCategoryMap3">
+		<result property="category_name" column="category_name" />
+	</resultMap>
+
+	<select id="getInvestList" resultMap="projectMap3">
+		select 
+			p.project_no,
+			p.project_thumbnail, 
+			m.member_name,
+			m.member_profile,
+			m.member_company,
+			pc.category_name, 
+			p.project_title, 
+			ifnull(sum(ji.invest_amount),0) as "total",
+			TRUNCATE((ifnull(sum(ji.invest_amount),0)/p.project_goal)*100,0) AS "rate", 
+			TO_DAYS(project_end)-TO_DAYS(CURRENT_DATE()) as "dday",  
+			count(ji.sponsor_email) as "sponsor_count", 
+		    p.project_start, 
+		    p.project_end,
+		    p.project_status,
+		    p.project_type,
+		    CASE
+				WHEN project_end >= CURRENT_DATE()
+				THEN '1'
+				ELSE '0'
+			END AS "done" 
+		from project p
+			join member m on p.project_email = m.member_email
+			join project_category pc on p.project_category = pc.category_code
+			left join join_invest ji on ji.project_no = p.project_no
+		where
+			<include refid="criteria"></include>
+		group by  p.project_no
+		order by
+		<choose>
+	        <when test="listSort == 'total'">done desc, total desc</when>                     
+	        <when test="listSort == 'project_end'">done desc, p.project_end desc, dday</when>        
+	        <when test="listSort == 'project_start'">done desc, p.project_start desc</when>   
+	        <when test="listSort == 'sponsor_count'">done desc, sponsor_count desc</when> 
+	        <otherwise>done desc, total desc</otherwise>        
+	    </choose>
+	    limit ${startNum}, ${amount}
+	</select> 
+
+
+	<!-- 투자형 프로젝트 상단 -->
+	<resultMap type="ProjectVO" id="projectMap4">
+		<result property="project_title" column="project_title" />
+		<result property="project_thumbnail" column="project_thumbnail" />
+		<result property="project_video" column="project_video" />
+		<result property="project_content" column="project_content" />
+		<result property="project_file" column="project_file" />
+		<result property="project_status" column="project_status" />
+		<result property="sponsor_count" column="sponsor_count" />
+		<result property="dday" column="dday" />
+		<result property="total" column="total" />
+		<result property="rate" column="rate" />
+		<association property="memberVO" resultMap="memberMap4" />
+		<association property="projectCategoryVO" resultMap="projectCategoryMap4" />
+	</resultMap>
+	
+	<resultMap type="MemberVO" id="memberMap4">
+		<result property="member_email" column="member_email" />
+		<result property="member_profile" column="member_profile" />
+		<result property="member_name" column="member_name" />
+		<result property="member_company" column="member_company" />
+	</resultMap>
+	
+	<resultMap type="ProjectCategoryVO" id="projectCategoryMap4">
+		<result property="category_name" column="category_name" />
+	</resultMap>
+	
+	<select id="getInvestDetailTop" resultMap="projectMap4">
+		select 
+			pc.category_name, 
+			p.project_title, 
+			p.project_thumbnail,
+			p.project_video,
+			p.project_content,
+			p.project_file,  
+			m.member_profile,
+			m.member_name,
+			m.member_email,
+			m.member_company,
+			ifnull(sum(ji.invest_amount),0) as "total",
+			TRUNCATE((ifnull(sum(ji.invest_amount),0)/p.project_goal)*100,0) AS "rate", 
+			count(p.project_email) as "sponsor_count",
+			TO_DAYS(project_end)-TO_DAYS(CURRENT_DATE()) as "dday",
+			p.project_status 
+		from project p
+			join member m on p.project_email = m.member_email
+			join project_category pc on p.project_category = pc.category_code
+			join join_invest ji on ji.project_no = p.project_no
+		where p.project_no = #{project_no}
+	</select>
+
+
+	<!-- 증권발행조건 -->
+	<select id="checkBond" resultType="InvestVO">
+		select interest_rate, deposit_date, min_amount, pay_period, expiry_date 
+		from invest 
+		where project_no = #{project_no}
+	</select>
+	
+	
+	<!-- 투자내용 및 한도 -->
+	<resultMap type="ProjectVO" id="projectMap5">
+		<result property="project_title" column="project_title" />
+		<result property="project_end" column="project_end" />
+		<result property="project_goal" column="project_goal" />
+		<association property="memberVO" resultMap="memberMap5" />
+		<association property="investVO" resultMap="investMap5" />
+	</resultMap>
+	
+	<resultMap type="MemberVO" id="memberMap5">
+		<result property="member_company" column="member_company" />
+	</resultMap>
+	
+	<resultMap type="InvestVO" id="investMap5">
+		<result property="deposit_date" column="deposit_date" />
+		<result property="min_amount" column="min_amount" />
+		<result property="invest_limit" column="invest_limit" />
+	</resultMap>
+
+	<select id="getInvestInfo" parameterType="map" resultMap="projectMap5">
+		select p.project_title, m.member_company, p.project_end, i.deposit_date, p.project_goal, i.min_amount, 
+		       (select 10000000 - ifnull(sum(invest_amount),0) 
+		       			from join_invest 
+		       			where sponsor_email = #{sponsor_email} and invest_status = '결제완료') as "invest_limit"
+		from project p
+		join invest i on p.project_no = i.project_no
+		join member m on p.project_email = m.member_email
+		where p.project_no = #{project_no}
+	</select>
+
+
+	<!-- 투자하기 -->
+	<insert id="joinInvest" parameterType="JoinInvestVO">
+		insert into join_invest(project_no, sponsor_email, invest_dt, invest_amount, invest_status, invest_bond)
+		values (#{project_no}, #{sponsor_email}, now(), #{invest_amount}, '결제완료', null)
+	</insert>
+	
+	<!-- 프로젝트 개수 -->
+	<select id="getProjectCount" resultType="int">
+		select count(*) 
+		from project p
+			join project_category pc on p.project_category = pc.category_code
+		where 
+			<include refid="criteria"></include>
+	</select>
+	
+	<!-- criteria -->
+	<sql id="criteria">
+		<trim suffixOverrides="AND">
+			project_type = '투자' and project_status in ('승인', '진행중', '진행완료', '정산요청', '정산완료') and 
+			project_start <![CDATA[<=]]>  CURRENT_DATE() AND
+			 <choose>
+	            <when test="category == '공간/리빙'">
+	            	category_name = '공간/리빙' AND
+	            </when>                     
+	            <when test="category == '사회이슈'">
+	            	category_name = '사회이슈' AND
+	            </when>        
+	            <when test="category == '교육/출판'">
+	            	category_name = '교육/출판' AND
+	            </when>   
+	            <when test="category == '문화예술'">
+	            	category_name = '문화예술' AND
+	            </when>         
+	            <when test="category == '지역재생'">
+	            	category_name = '지역재생' AND
+	            </when>
+	            <when test="category == '푸드'">
+	            	category_name = '푸드' AND
+	            </when>
+	            <when test="category == '테크'">
+	            	category_name = '테크' AND
+	            </when>
+	            <when test="category == '뷰티/패션'">
+	            	category_name = '뷰티/패션' AND
+	            </when>
+	            <when test="category == '여행'">
+	            	category_name = '여행' AND
+	            </when>
+			</choose>	
+		</trim>
+	</sql>
+	
+</mapper>

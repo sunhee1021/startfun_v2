@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    
+<configuration>
+
+    <!-- 파일로 로그 -->
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    	<file>C:\startfunlog\logback.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+        	<Pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5level] - %msg%n</Pattern>
+        </encoder>
+
+        <!-- 로그를 남기는 파일의 용량이 100KB가 넘으면 이를 압축 파일로 만들고 새로 로그 파일로 만들라는 정책 -->
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        	<MaxFileSize>100KB</MaxFileSize>
+        </triggeringPolicy>
+
+        <!-- 파일을 덮어쓰는 정책 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        	<FileNamePattern>C:\startfunlog\logback_%i.log.zip</FileNamePattern>
+        	<!-- logexample2.1.log.zip부터 logexample2.10.log.zip까지 생성 후 다시 logexample2.1.log.zip에 덮어쓴다.-->
+            <MinIndex>1</MinIndex>
+            <MaxIndex>10</MaxIndex>
+        </rollingPolicy>
+    </appender>
+
+
+	<!-- com.weis.startfun 아래 패키지 로그들만 파일로 로그를 남긴다.-->
+	<logger name="com.weis.startfun"  level="info" additivity="false">
+       <appender-ref ref="ROLLING" />
+    </logger>
+
+
+	<!-- 콘솔로그 -->	
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+                <charset>UTF-8</charset>
+				<Pattern>[%d{yyyy-MM-dd HH:mm:ss}] [%-5level] - %msg%n</Pattern>
+			 </encoder>
+	</appender>
+	
+    <!--  log4jdbc-log4j2 -->
+    <logger name="jdbc.sqlonly" level="DEBUG"/> 
+    <logger name="jdbc.sqltiming" level="INFO"/> 
+    <logger name="jdbc.audit" level="WARN"/>
+    <logger name="jdbc.resultset" level="WARN"/>
+    <logger name="jdbc.resultsettable" level="INFO"/>
+    <logger name="jdbc.connection" level="INFO"/>
+	
+	
+	 <!-- root는 글로벌 로거를 의미하며, 위의 logger에 해당하지 않으면 root 로거가 실행된다. -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	</root>
+	
+</configuration>

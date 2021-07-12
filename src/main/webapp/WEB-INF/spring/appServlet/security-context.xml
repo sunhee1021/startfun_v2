@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/security"
+ 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                     	http://www.springframework.org/schema/beans/spring-beans.xsd
+                     	http://www.springframework.org/schema/context
+					 	http://www.springframework.org/schema/context/spring-context.xsd
+					 	http://www.springframework.org/schema/mvc
+					 	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+  					 	http://www.springframework.org/schema/security 
+  					 	http://www.springframework.org/schema/security/spring-security.xsd
+  					 	http://www.springframework.org/schema/tx 
+  					 	http://www.springframework.org/schema/tx/spring-tx.xsd">
+	
+	
+	<!-- security 
+	<http auto-config="true">-->
+	<http pattern="/startfun/**" auto-config="true">
+		<csrf disabled="true"/>
+ 	
+		<logout logout-success-url="/startfun/index.do"
+				logout-url="/startfun/logout"
+				delete-cookies="true" 
+				invalidate-session="true" />
+		
+		<intercept-url pattern="/*.do" access="permitAll" />
+		<intercept-url pattern="/mypage/**" access="hasAnyRole('USER, COMPANY')" />
+		
+		<form-login login-page="/startfun/login.do"
+                    default-target-url="/startfun/index.do"
+                    login-processing-url = "/startfun/login"
+                    authentication-failure-url="/startfun/login.do?error"
+                    username-parameter="email"  
+                    password-parameter="password" />
+
+                    
+		<!-- <access-denied-handler error-page="/join/accessdenied.htm" /> -->
+
+		<session-management invalid-session-url="/">
+			<concurrency-control max-sessions="1" expired-url="/startfun/login.do" error-if-maximum-exceeded="true" />
+		</session-management>
+
+	</http>
+	
+	<!-- security -->
+	<http pattern="/admin/**" auto-config="true">
+		<csrf disabled="true"/>
+ 	
+		<logout logout-success-url="/admin/login.do"
+				logout-url="/admin/logout"
+				delete-cookies="true" 
+				invalidate-session="true" />
+		
+		<intercept-url pattern="/admin/login.do" access="permitAll" />
+		<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')" />
+		
+		<form-login login-page="/admin/login.do"
+                    default-target-url="/admin/index.do"
+                    login-processing-url = "/admin/login"
+                    authentication-failure-url="/admin/login.do?error"
+                    username-parameter="email"  
+                    password-parameter="password" />
+
+		<session-management invalid-session-url="/">
+			<concurrency-control max-sessions="1" expired-url="/admin/login.do" error-if-maximum-exceeded="true" />
+		</session-management>
+
+	</http> 
+	
+	<!-- 인증 관리 manager -->
+ 	<authentication-manager>
+		<authentication-provider>
+			<!-- root-context에 DB 연결정보 injection -->
+			<jdbc-user-service data-source-ref="dataSource" 
+				users-by-username-query="select member_email as username, member_password as password, member_enabled as enabled​ from member where member_email=?"
+				authorities-by-username-query="select email as username, authority_name as authority 
+												from member_auth ma
+												join authority a
+												on a.authority_code=ma.authority_code
+												where ma.email=?" />
+			<!-- 비밀번호 암호화 (root context ref) -->
+			<password-encoder ref="bCryptPasswordEncoder"/>
+		</authentication-provider>
+	</authentication-manager>
+	
+
+</beans:beans>

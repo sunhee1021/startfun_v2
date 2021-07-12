@@ -1,0 +1,55 @@
+<meta charset="UTF-8">
+<div id="reward" class="mb-5 mt-5">
+	<div class="form-group">
+	<hr>
+		<ul class="nav justify-content-between">
+			<li class="nav-item text-center mt-3"><label>리워드</label></li>
+			<li class="nav-item">
+				<button type="button" class="btn btn-sm btn-outline-primary" id="rewardDelBtn">리워드 삭제</button>
+			</li>
+		</ul>
+	</div>
+	<hr>
+	<div class="form-group mb-4">
+		<label for="rewardPrice">리워드 금액</label>
+		<div class="input-group mb-3">
+			<input type="text" id="rewardPrice" class="form-control form-pill"name="add_reward_price" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"> 
+			<span class="input-group-append p-0">원</span>
+		</div>
+	</div>
+	<div class="form-group mb-4">
+		<label for="rewardCompose">리워드 구성</label> <input type="text" id="rewardCompose" name="add_reward_compose" class="form-control form-pill" placeholder="ex) 날아라 슈퍼보드 기념 티셔츠 1개 + 감사의 손편지">
+	</div>
+	<div class="form-group mb-4">
+		<label for="rewardShipType">배송조건</label><br>
+		<div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" id="add_deliveryType" value="1" name="add_reward_ship_type" checked="checked">
+			<label id="add_label" for="add_deliveryType">배송형</label>
+		</div>
+		<div class="form-check form-check-inline">
+			<input class="form-check-input" type="radio" id="add_non_deliveryType" value="2" name="add_reward_ship_type"> 
+			<label id="add_non_label" for="add_nondeliveryType">미배송형</label><br>
+		</div>
+	</div>
+	<div class="form-group mb-4">
+		<label for="rewardCharge">배송료</label>
+		<div class="input-group mb-3">
+			<input type="text" id="rewardCharge" class="form-control form-pill" value="0" name="add_reward_charge" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"> 
+			<span class="input-group-append p-0">원</span>
+		</div>
+	</div>
+	<div class="form-group mb-4">
+		<label for="dueDate">배송예정일</label>
+		<div class="input-group mb-3">
+			<div class="input-group-prepend">
+				<span class="input-group-text"> <i class="far fa-calendar-alt"></i>
+				</span>
+			</div>
+			<input type="text" id="dueDate" class="form-control form-pill" name="add_due_date">
+		</div>
+		<div class="form-group form-check">
+			<input type="checkbox" class="form-check-input" id="add_allCheckBtn">
+			<label class="form-check-label" id="addAllCheckBtn" for="allCheckBtn">일괄적용</label>
+		</div>
+	</div>
+</div>

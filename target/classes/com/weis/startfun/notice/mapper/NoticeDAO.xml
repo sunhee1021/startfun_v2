@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weis.startfun.notice.model.NoticeDAO">
+
+	<!-- 공지글 등록 -->
+	<insert id="insert" parameterType="NoticeVO" useGeneratedKeys="true" keyProperty="notice_no">
+		insert into notice (notice_no, notice_title, notice_content, notice_regdate) 
+		values (#{notice_no}, #{notice_title}, #{notice_content}, now()) 
+	</insert>
+	
+	<!-- 공지글 목록 -->
+	<select resultType="NoticeVO" id="getNotices" parameterType="com.weis.startfun.utils.Criteria">
+		select * from notice order by notice_no desc
+		limit ${startNum}, ${amount}
+	</select>
+	
+	<!-- 공지글 전체 개수 -->
+	<select id="getNoticeCount" resultType="int">
+		select count(*) from notice
+	</select>
+	
+	<!-- 공지글 검색 -->
+	<select id="searchNotices" resultType="NoticeVO" parameterType="hashmap">
+		select notice_no, notice_title, notice_content, notice_regdate 
+		from notice where notice_title like CONCAT('%',#{keyword},'%') 
+		order by notice_no desc
+		limit ${cri.startNum}, ${cri.amount}
+	</select>
+	
+	<!-- 공지글 검색 전체 개수 -->
+	<select id="searchNoticeCount" resultType="NoticeVO" parameterType="String">
+		select count(*) from notice where notice_title like CONCAT('%',#{keyword},'%') order by notice_no desc
+	</select>
+	
+	<!-- 공지글 상세 -->
+	<select resultType="NoticeVO" id="getNotice">
+		select notice_no, notice_title, notice_content, notice_regdate from notice where notice_no =${notice_no} 
+	</select>
+	
+	<!-- 공지글 수정 -->
+	<update id="update" parameterType="NoticeVO">
+		update notice set notice_title=#{notice_title}, notice_content=#{notice_content} where notice_no=${notice_no} 
+	</update>
+	
+	<!-- 공지글 삭제 -->
+	<delete id="delete" parameterType="int">
+		delete from notice where notice_no=#{notice_no}
+	</delete>
+	
+	<!-- 댓글 등록 -->
+	<insert id="replywrite" parameterType="NoticeReplyVO">
+		insert into notice_reply (notice_no, reply_content, reply_email, reply_regdate) 
+		values (#{notice_no}, #{reply_content}, #{reply_email}, now()) 
+	</insert>
+	
+	<!-- 댓글 목록 -->
+	<select id="getReply" parameterType="int" resultType="NoticeReplyVO">
+		select notice_no, reply_no, reply_content, reply_regdate, reply_email from notice_reply where notice_no=${notice_no} order by reply_no desc
+	</select>
+	
+	<!-- 댓글 상세(값) -->
+	<select id="replydetail" parameterType="int" resultType="NoticeReplyVO">
+		select notice_no, reply_no, reply_content, reply_regdate, reply_email from notice_reply where reply_no=${reply_no}
+	</select>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="replydelete" parameterType="int">
+		delete from notice_reply where reply_no=#{reply_no}
+	</delete>
+	
+	<!-- 댓글 수정 -->
+	<update id="replyupdate" parameterType="NoticeReplyVO">
+		update notice_reply set reply_content=#{reply_content} where reply_no=${reply_no} 
+	</update>
+</mapper>

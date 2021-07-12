@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.weis.startfun.project.model.ProjectQnaDAO">
+
+<!-- 프로젝트 qna 목록 -->
+<select id="getReply" resultType="ProjectQnaVO">
+	select * from project_qna where project_no=#{project_no} order by qna_no desc
+</select>
+
+<!-- 프로젝트 qna 등록 -->
+<insert id="replywrite" parameterType="ProjectQnaVO">
+	insert into project_qna (project_no, qna_email, qna_regdate, qna_content, qna_reply)
+	values (#{project_no}, #{qna_email}, now(), #{qna_content}, #{qna_reply})
+</insert>
+
+<!-- 프로젝트 qna 삭제 -->
+<delete id="replydelete" parameterType="int">
+	delete from project_qna where qna_no=#{qna_no}
+</delete>
+
+<!-- 프로젝트 qna 수정(view) -->
+<select id="editReply" resultType="ProjectQnaVO" parameterType="int">
+	select * from project_qna where qna_no=#{qna_no}
+</select>
+
+<!-- 프로젝트 qna 수정(처리) -->
+<update id="replyupdate" parameterType="ProjectQnaVO">
+	update project_qna set qna_content=#{qna_content} where qna_no=#{qna_no}
+</update>
+
+<!-- 프로젝트 qna 대댓글 등록 -->
+<update id="rereplywrite" parameterType="ProjectQnaVO">
+	update project_qna set qna_reply=#{qna_reply} where qna_no=#{qna_no}
+</update>
+
+<!-- 프로젝트 qna 대댓글 삭제 -->
+<update id="rereplydelete" parameterType="int">
+	update project_qna set qna_reply=null where qna_no=#{qna_no}
+</update>
+</mapper>

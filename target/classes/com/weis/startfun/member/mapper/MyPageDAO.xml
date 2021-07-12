@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.weis.startfun.member.model.MyPageDAO">
+	
+	<!-- 마이페이지 계정정보 -->
+	<select id="getMember" resultType="MemberVO">
+		select member_email, member_password, member_name, member_phone, member_profile, member_introduce, member_type, member_sns, member_company, member_brn, member_crn 
+		from member where member_email=#{email}
+	</select>
+	
+	<!-- 마이페이지 계정정보 수정 -->
+	<update id="updateMember" parameterType="MemberVO">
+		update member 
+		<set>
+			<if test="member_password != null">member_password=#{member_password},</if>
+			<if test="member_name != null">member_name=#{member_name},</if>
+			<if test="member_phone != null">member_phone=#{member_phone},</if>
+			<if test="member_profile != null">member_profile=#{member_profile},</if>
+			<if test="member_introduce != null">member_introduce=#{member_introduce},</if>
+		</set>
+		where member_email=#{member_email}
+	</update>
+	
+	<!-- 마이페이지 계정정보 탈퇴 -->
+	<update id="withdrawMember">
+		update member set member_status='탈퇴', member_enabled='0' where member_email=#{email}
+	</update>
+	
+	<!-- resultMap MemberJOIN -->
+	<resultMap type="MemberVO" id="MemberJOIN">
+		<result column="member_name" property="member_name" />
+		<result column="member_profile" property="member_profile" />
+		<result column="member_email" property="member_email" />
+		<result column="member_phone" property="member_phone" />
+		<result property="member_company" column="member_company" />
+	</resultMap>
+	<!-- resultMap FollowingVO -->
+	<resultMap type="FollowingVO" id="FollowingVO">
+		<result column="following_no" property="following_no" />
+		<result column="from_user" property="from_user" />
+		<result column="to_user" property="to_user" />
+		<collection property="member" resultMap="MemberJOIN" />
+	</resultMap>
+	
+	<!-- 팔로잉 리스트 -->
+	<select id="getFollowingList" resultMap="FollowingVO">
+		select following_no, to_user, member_name, member_profile
+		from following f
+		join member m
+		on m.member_email=f.to_user
+		where from_user=#{fromEmail}
+	</select>
+	
+	<!-- 팔로잉 취소 -->
+	<delete id="delFollowing">
+		delete from following where following_no=#{following_no}
+	</delete>
+	
+	<!-- resultMap FollowerVO -->
+	<resultMap type="FollowerVO" id="FollowerVO">
+		<result column="follower_no" property="follower_no" />
+		<result column="to_user" property="to_user" />
+		<result column="from_user" property="from_user" />
+		<collection property="member" resultMap="MemberJOIN" />
+	</resultMap>
+	
+	<!-- 팔로워 리스트 -->
+	<select id="getFollowerList" resultMap="FollowerVO">
+		select follower_no, from_user, m.member_name, m.member_profile
+		from follower f
+		join member m
+		on m.member_email=f.from_user
+		where to_user=#{toEmail}
+	</select>
+	
+	<!-- resultMap ProjectVO -->
+	<resultMap type="ProjectVO" id="ProjectJOIN">
+		<result column="project_no" property="project_no" />
+		<result column="project_category" property="project_category" />
+		<result column="project_title" property="project_title" />
+		<result column="project_thumbnail" property="project_thumbnail" />
+		<result column="project_start" property="project_start" />
+		<result column="project_end" property="project_end" />
+		<result column="project_status" property="project_status" />
+		<result column="project_type" property="project_type" />
+		<result column="sponsor_count" property="sponsor_count" />
+		<result column="rate" property="rate" />
+		<result column="total" property="total" />
+		<result column="dday" property="dday" />
+	</resultMap>
+	
+	<!-- resultMap ProjectCategoryVO -->
+	<resultMap type="ProjectCategoryVO" id="ProjectCategoryJOIN">
+		<result column="category_code" property="category_code" />
+		<result column="category_name" property="category_name" />
+	</resultMap>
+	
+	<!-- resultMap WishJOIN -->
+	<resultMap type="WishVO" id="WishJOIN">
+		<result column="wish_no" property="wish_no" />
+		<result column="project_no" property="project_no" />
+		<result column="email" property="email" />
+		<result column="support_sponsor_count" property="support_sponsor_count" />
+		<result column="support_total" property="support_total" />
+		<result column="support_rate" property="support_rate" />
+		<result column="invest_sponsor_count" property="invest_sponsor_count" />
+		<result column="invest_rate" property="invest_rate" />
+		<result column="invest_total" property="invest_total" />
+		<collection property="project" resultMap="ProjectJOIN" />
+		<collection property="member" resultMap="MemberJOIN" />
+		<collection property="project_category" resultMap="ProjectCategoryJOIN" />
+	</resultMap>
+	
+	<!-- 관심프로젝트 리스트 -->
+	<select id="getWishList" resultMap="WishJOIN">
+		select w.wish_no,
+				p.project_no,
+				p.project_thumbnail,
+				p.project_title,
+				p.project_start, 
+			    p.project_end,
+			    p.project_status,
+			    p.project_type,
+			    TO_DAYS(project_end)-TO_DAYS(CURRENT_DATE()) as "dday",
+			    count(js.sponsor_email) as "support_sponsor_count",
+			    count(ji.sponsor_email) as "invest_sponsor_count",
+				m.member_name,
+				m.member_profile,
+				m.member_company,
+				pc.category_name,
+				ifnull(sum(js.support_amount)+sum(js.support_add_amount),0) as "support_total", 
+				TRUNCATE(((ifnull(sum(js.support_amount),0)+ifnull(sum(js.support_add_amount),0))/p.project_goal )*100,0) AS "support_rate",
+				ifnull(sum(ji.invest_amount),0) as "invest_total",
+				TRUNCATE((ifnull(sum(ji.invest_amount),0)/p.project_goal)*100,0) AS "invest_rate" 
+		from wish w 
+		join project p on w.project_no = p.project_no 
+		join member m on p.project_email = m.member_email
+		join project_category pc on p.project_category = pc.category_code
+		left join join_support js on p.project_no = js.project_no
+		left join join_invest ji on p.project_no = ji.project_no
+		where w.email = #{email} and p.project_status in ('승인', '진행중', '진행완료', '정산요청', '정산완료')
+		group by w.project_no
+		order by wish_no desc
+	</select>
+	
+	<!-- 개설프로젝트 리스트 -->
+	<select id="getOpenProjectList" resultType="ProjectVO">
+		select project_no, project_category, project_title, project_thumbnail, project_start, project_end, project_goal, project_regdate, project_status, project_type
+		from project 
+		where project_email=#{email}
+	</select>
+	
+	<!-- 개설프로젝트 삭제 -->
+	<delete id="deleteProject">
+		delete from project where project_no=#{projectNo}
+	</delete>
+	
+	<!-- 개설프로젝트 상태변경 -->
+	<update id="updateProjectStatus" parameterType="hashmap">
+		update project set project_status=#{projectStatus} where project_no=${projectNo}
+	</update>
+	
+	<!-- 후원스폰서 리스트 -->
+	<select id="getSupportSponsorList" resultType="JoinSupportVO" parameterType="hashmap">
+		select support_no, sponsor_email, 
+				support_dt, support_amount, 
+				support_add_amount, reward_status, 
+				support_status, ship_name,
+				ship_phone, ship_address,
+				ship_memo,
+				js.project_no, 
+				r.reward_price+ifnull(js.support_add_amount,0)+ifnull(r.reward_charge,0) as "total" 
+		from join_support js 
+		join reward r 
+		on js.support_reward = r.reward_no 
+		where js.project_no=#{projectNo}
+		limit ${cri.startNum}, ${cri.amount}
+	</select>
+	
+	<!-- 후원스폰서 총 인원 -->
+	<select id="getSupportSponsorCount" resultType="int">
+		select count(*) from join_support where project_no=#{projectNo}
+	</select>
+	
+	<!-- 후원스폰서 상태변경 -->
+	<update id="updateRewardStatus" parameterType="hashmap">
+		update join_support set reward_status=#{rewardStatus} where support_no=${supportNo}
+	</update>
+	
+	<!-- resultMap RewardJOIN -->
+	<resultMap type="RewardVO" id="RewardJOIN">
+		<result column="reward_compose" property="reward_compose" />
+		<result column="reward_price" property="reward_price" />
+		<result column="reward_charge" property="reward_charge" />
+		<result column="due_date" property="due_date" />
+		<result column="reward_ship_type " property="reward_ship_type" />
+	</resultMap>
+	
+	<!-- resultMap JoinSupportJOIN -->
+	<resultMap type="JoinSupportVO" id="JoinSupportJOIN">
+		<result column="support_no" property="support_no" />
+		<result column="project_no" property="project_no" />
+		<result column="sponsor_email" property="sponsor_email" />
+		<result column="support_dt" property="support_dt" />
+		<result column="support_reward" property="support_reward" />
+		<result column="support_amount" property="support_amount" />
+		<result column="support_add_amount" property="support_add_amount" />
+		<result column="reward_status" property="reward_status" />
+		<result column="support_status" property="support_status" />
+		<result column="ship_name" property="ship_name" />
+		<result column="ship_phone" property="ship_phone" />
+		<result column="ship_address" property="ship_address" />
+		<result column="ship_memo" property="ship_memo" />
+		<result column="payment_dt" property="payment_dt" />
+		<collection property="reward" resultMap="RewardJOIN" />
+		<collection property="member" resultMap="MemberJOIN" />
+		<collection property="project" resultMap="ProjectJOIN" />
+		<collection property="project_category" resultMap="ProjectCategoryJOIN" />
+	</resultMap>
+	
+	<!-- 후원 참여 상세 -->
+	<select id="getJoinSupport" resultMap="JoinSupportJOIN">
+		select support_no, 
+				js.project_no, js.sponsor_email, 
+				js.support_dt, js.support_reward, 
+				js.support_amount, js.support_add_amount, 
+				js.reward_status, js.support_status, 
+				js.ship_name, js.ship_phone, 
+				js.ship_address, js.ship_memo, 
+				r.reward_compose, r.reward_price, 
+				r.reward_charge, r.due_date, 
+				m.member_name, m.member_phone, 
+				pc.category_name, 
+				p.project_title, p.project_thumbnail, 
+				p.project_start, p.project_end,
+				p.project_status, 
+				TO_DAYS(p.project_end)-TO_DAYS(CURRENT_DATE()) as "dday",
+				r.reward_price+ifnull(js.support_add_amount,0)+ifnull(r.reward_charge,0) as "total", 
+				DATE_ADD( p.project_end, INTERVAL 1 DAY) as "payment_dt"
+		from join_support js
+		join reward r 
+		on js.support_reward=r.reward_no
+		join member m
+		on js.sponsor_email=m.member_email
+		join project p
+		on js.project_no=p.project_no
+		join project_category pc
+		on p.project_category=pc.category_code
+		where support_no=#{supportNo}
+	</select>
+	
+	<!-- 투자스폰서 리스트 -->
+	<select id="getInvestSponsorList" resultType="JoinInvestVO" parameterType="hashmap">
+		select invest_no, sponsor_email, invest_dt, invest_amount, invest_status, invest_bond, project_no
+		from join_invest where project_no=#{projectNo}
+		limit ${cri.startNum}, ${cri.amount}
+	</select>
+	
+	<!-- 투자스폰서 총 인원 -->
+	<select id="getInvestSponsorCount" resultType="int">
+		select count(*) from join_invest where project_no=#{projectNo}
+	</select>
+	
+	<!-- resultMap JoinInvestJOIN -->
+	<resultMap type="JoinInvestVO" id="JoinInvestJOIN">
+		<result column="invest_no" property="invest_no" />
+		<result column="project_no" property="project_no" />
+		<result column="sponsor_email" property="sponsor_email" />
+		<result column="invest_dt" property="invest_dt" />
+		<result column="invest_amount" property="invest_amount" />
+		<result column="invest_status" property="invest_status" />
+		<result column="invest_bond" property="invest_bond" />
+		<collection property="member" resultMap="MemberJOIN" />
+		<collection property="project" resultMap="ProjectJOIN" />
+		<collection property="project_category" resultMap="ProjectCategoryJOIN" />
+	</resultMap>
+	
+	<!-- 투자 참여 상세 -->
+	<select id="getInvestSponsor" resultMap="JoinInvestJOIN">
+		select invest_no, 
+				ji.project_no, ji.sponsor_email, 
+				ji.invest_dt, ji.invest_amount, 
+				ji.invest_status, ji.invest_bond, 
+				m.member_name, m.member_phone,
+				pc.category_name, p.project_title, 
+				p.project_thumbnail, p.project_start, 
+				p.project_end, p.project_status, 
+				TO_DAYS(project_end)-TO_DAYS(CURRENT_DATE()) as "dday"
+		from join_invest ji 
+		join member m
+		on ji.sponsor_email=m.member_email
+		join project p
+		on ji.project_no=p.project_no
+		join project_category pc
+		on p.project_category=pc.category_code
+		where invest_no=#{investNo}
+	</select>
+	
+	<!-- 투자스폰서 채권증서 업로드 -->
+	<update id="uploadInvestBond" parameterType="JoinInvestVO">
+		update join_invest set invest_bond=#{invest_bond} where invest_no=${invest_no}
+	</update>
+	
+	<!-- resultMap JoinSupportJOIN -->
+	<resultMap type="JoinSupportVO" id="JoinSupportProjectJOIN">
+		<result column="support_no" property="support_no" />
+		<result column="project_no" property="project_no" />
+		<result column="sponsor_email" property="sponsor_email" />
+		<result column="support_dt" property="support_dt" />
+		<result column="support_reward" property="support_reward" />
+		<result column="support_amount" property="support_amount" />
+		<result column="support_add_amount" property="support_add_amount" />
+		<result column="reward_status" property="reward_status" />
+		<result column="support_status" property="support_status" />
+		<result column="ship_name" property="ship_name" />
+		<result column="ship_phone" property="ship_phone" />
+		<result column="ship_address" property="ship_address" />
+		<result column="ship_memo" property="ship_memo" />
+		<result column="payment_dt" property="payment_dt" />
+		<collection property="reward" resultMap="RewardJOIN" />
+		<collection property="project" resultMap="ProjectJOIN" />
+	</resultMap>
+	
+	<!-- 참여프로젝트 후원리스트 -->
+	<select id="getJoinSupportList" resultMap="JoinSupportProjectJOIN">
+		select support_no , 
+				js.project_no, js.support_dt, 
+				js.support_amount, js.support_add_amount, 
+				js.reward_status, js.support_status, 
+				r.reward_compose, r.reward_price, 
+				r.reward_charge, r.due_date, 
+				p.project_title, p.project_thumbnail, 
+				p.project_status, 
+				r.reward_price+ifnull(js.support_add_amount,0)+ifnull(r.reward_charge,0) as "total", 
+				DATE_ADD( p.project_end, INTERVAL 1 DAY) as "payment_dt"
+		from join_support js
+		join reward r 
+		on js.support_reward=r.reward_no
+		join project p
+		on js.project_no=p.project_no
+		where js.sponsor_email=#{email}
+	</select>
+
+	<!-- 참여프로젝트 후원 배송지 수정 -->
+	<update id="editShipInfo" parameterType="JoinSupportVO">
+		update join_support set 
+			ship_name=#{ship_name},
+			ship_phone=#{ship_phone},
+			ship_address=#{ship_address},
+			ship_memo=#{ship_memo}
+		where support_no=${support_no}
+	</update>
+	
+	<!-- 참여프로젝트 후원 취소 -->
+	<update id="cancelJoinSupport">
+		update join_support set support_status='결제취소'
+		where support_no=#{supportNo}
+	</update>
+
+	<!-- 참여프로젝트 투자리스트 -->
+	<select id="getJoinInvestList" resultMap="JoinInvestJOIN">
+		select ji.invest_no, ji.invest_dt, ji.invest_amount, ji.invest_status,
+			p.project_title, p.project_thumbnail, p.project_status
+		from join_invest ji 
+		join project p
+		on ji.project_no=p.project_no
+		where ji.sponsor_email=#{email}
+	</select>
+	
+	<!-- 참여프로젝트 투자 취소 -->
+	<update id="cancelJoinInvest">
+		update join_invest set invest_status='환불' 
+		where invest_no=#{investNo}
+	</update>
+	
+	<!-- 후기쓰기 -->
+	<insert id="writeReview" parameterType="ReviewVO">
+    	insert into review(project_no, review_email, review_code, review_score) 
+		values (#{project_no}, #{review_email}, #{review_code}, #{review_score})
+	</insert>
+	
+	
+	<!-- 후기작성 후 상태변경 -->
+	<update id="changeStatus">
+		update join_support set reward_status = '후기작성완료' where support_no = #{support_no}
+	</update>
+	
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.weis.startfun.member.model.ProfileDAO">
+
+	<!-- 마이페이지 계정정보 -->
+	<select id="getMeber" resultType="MemberVO"
+		parameterType="String">
+		select member_email, member_name, member_profile, member_introduce,
+		member_type, member_sns, member_company, member_regdate
+		from member where member_email=#{member_email}
+	</select>
+
+	<!-- resultMap ProjectVO -->
+	<resultMap type="ProjectVO" id="ProjectJOIN">
+		<result column="project_no" property="project_no" />
+		<result column="project_category" property="project_category" />
+		<result column="project_title" property="project_title" />
+		<result column="project_thumbnail" property="project_thumbnail" />
+		<result column="project_start" property="project_start" />
+		<result column="project_end" property="project_end" />
+		<result column="project_status" property="project_status" />
+		<result column="project_type" property="project_type" />
+		<result column="sponsor_count" property="sponsor_count" />
+		<result column="rate" property="rate" />
+		<result column="total" property="total" />
+		<result column="dday" property="dday" />
+		<association property="projectCategoryVO"
+			resultMap="ProjectCategoryJOIN" />
+		<association property="memberVO" resultMap="MemberJOIN" />
+	</resultMap>
+
+	<!-- resultMap ProjectCategoryVO -->
+	<resultMap type="ProjectCategoryVO" id="ProjectCategoryJOIN">
+		<result column="category_name" property="category_name" />
+	</resultMap>
+
+	<!-- resultMap MemberVO -->
+	<resultMap type="MemberVO" id="MemberJOIN">
+		<result column="member_name" property="member_name" />
+		<result column="member_profile" property="member_profile" />
+		<result property="member_company" column="member_company" />
+	</resultMap>
+
+	<!-- 개설 프로젝트 리스트 -->
+	<select id="getProjects" parameterType="String"
+		resultMap="ProjectJOIN">
+		select
+		p.project_no,
+		p.project_thumbnail,
+		p.project_title,
+		p.project_start,
+		p.project_end,
+		p.project_status,
+		p.project_type,
+		TO_DAYS(project_end)-TO_DAYS(CURRENT_DATE()) as "dday",
+		count(js.sponsor_email) + count(ji.sponsor_email) as "sponsor_count",
+		m.member_name,
+		m.member_profile,
+		m.member_company,
+		pc.category_name,
+		ifnull(sum(js.support_amount), 0) + ifnull(sum(js.support_add_amount), 0) +
+		ifnull(sum(ji.invest_amount), 0) as "total",
+		truncate( ( (ifnull(sum(support_amount), 0)+ ifnull(sum(support_add_amount), 0)
+		+ ifnull(sum(ji.invest_amount), 0)) / project_goal )*100, 0) as "rate"
+		from project p
+		join member m on p.project_email = m.member_email
+		join project_category pc on p.project_category = pc.category_code
+		left join join_support js on p.project_no = js.project_no
+		left join join_invest ji on p.project_no = ji.project_no
+		where project_email = #{project_email}
+		group by p.project_no
+	</select>
+
+	<!-- 팔로우 번호 찾기 -->
+	<select id="searchFollowing_no" resultType="FollowingVO">
+		select following_no from following where from_user = #{from_user} and
+		to_user = #{to_user}
+	</select>
+
+	<!-- 팔로우 이메일 찾기 -->
+	<select id="searchEmail" resultType="ProjectVO">
+		select project_email from project where project_no = #{project_no}
+	</select>
+
+	<!-- 팔로우하기 -->
+	<insert id="doFollow" parameterType="FollowingVO">
+		insert into following (to_user, from_user)
+		values (#{to_user}, #{from_user})
+	</insert>
+
+	<!-- 팔로우 취소하기 -->
+	<delete id="delFollow">
+		delete from following where following_no = #{following_no}
+	</delete>
+
+	<!-- 팔로워 수 -->
+	<select id="followerCount" parameterType="String"
+		resultType="int">
+		select count(*) from follower where from_user=#{member_email}
+	</select>
+
+	<!-- 팔로잉 수 -->
+	<select id="followingCount" parameterType="String"
+		resultType="int">
+		select count(*) from follower where to_user=#{member_email}
+	</select>
+
+</mapper>

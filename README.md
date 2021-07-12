@@ -93,10 +93,10 @@ end;
 * project를 delete하면 invest,support,reward도 delete되는 트리거
 * 팔로잉하면 팔로워에도 insert 되는 트리거
 * 팔로잉 취소하면 팔로워에도 delete 되는 트리거
-* 
+
 ## WebSocket
 ![websocket](https://user-images.githubusercontent.com/78418562/125291540-7b4be580-e35c-11eb-9d67-125ca3993447.gif)
-> 펀딩 진행 시 스타터와 스펀서간의 원활한 소통을 위해 웹소켓을 통한 실시간 채팅 및 알림 기능을 구현하였습니다. <br>
+> 펀딩 진행 시 스타터와 스펀서간의 원활한 소통을 위해 실시간 채팅 및 알림 기능을 구현하였습니다. <br>
 #### (HandshakeInterceptor를 통해 회원 이메일을 저장 후 textWebSocketHandler에 로그인 한 멤버 세션 리스트 · 해당 세션이 가지고 있는 방번호 리스트 · 채팅 방 리스트 총 세가지의 concurrentHashMap을 생성하여 세션을 관리)
 
 ## 결제API

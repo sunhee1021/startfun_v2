@@ -47,7 +47,6 @@ public class ProjectController {
 	@RequestMapping(value="/project/supportProjectReg.do", method = RequestMethod.GET)
 	public String supportProjectReg(Model model, Principal principal) {
 		
-		System.out.println("후원형 프로젝트 신청 페이지 이동");
 		//회원정보 가져오기
 		MemberVO member = null;
 		member = memberservice.editMember(principal.getName());
@@ -60,8 +59,6 @@ public class ProjectController {
 	@RequestMapping(value="/project/supportProjectReg.do", method = RequestMethod.POST)
 	public String supportProjectReg(MemberVO member, ProjectVO project, SupportVO support, RewardVO reward, HttpServletRequest request, Principal principal) throws Exception {
 		
-		System.out.println("후원형 프로젝트 등록 처리");
-		System.out.println("id확인: "+member.getMember_profile());
 		//project.project_status -> 접수 or 임시저장
 		//hidden값으로 project_status value 변경 후 submit
 		
@@ -75,8 +72,6 @@ public class ProjectController {
 	//후원형 프로젝트 수정 페이지 이동
 	@RequestMapping(value="/project/supportProjectEdit.do", method = RequestMethod.GET)
 	public String supportProjcetEdit(String project_no, Model model, Principal principal) {
-		
-		System.out.println("후원형 프로젝트 수정 페이지 이동");
 		
 		//status -> 접수 or 임시저장
 		//status 값에 따라 접수된 프로젝트 수정 페이지 or 임시저장 마저 작성하기 페이지로 이동
@@ -93,7 +88,6 @@ public class ProjectController {
 		
 		//reward 가져오기
 		List<RewardVO> reward = service.getReward(project_no);
-		System.out.println(reward);
 		
 		//addAttribute
 		model.addAttribute("member", member);
@@ -108,13 +102,11 @@ public class ProjectController {
 		switch (project.getProject_status()) {
 		case "접수":
 			//TODO : 수정 페이지 이동
-			System.out.println("수정페이지로 이동");
 			url = "project/supportProjectEdit";
 			break;
 
 		case "임시저장":
 			//TODO : 임시저장 수정 페이지 이동
-			System.out.println("임시저장페이지로 이동");
 			url = "project/supportProjectEdit";
 			break;
 		}
@@ -126,8 +118,6 @@ public class ProjectController {
 	@RequestMapping(value="/project/supportProjectEdit.do", method = RequestMethod.POST)
 	public String supportProjectEdit(MemberVO member, ProjectVO project, SupportVO support, RewardVO reward, HttpServletRequest request, Principal principal) throws Exception {
 		
-		
-		System.out.println("후원형 프로젝트 수정 처리");
 		
 		//project.project_status -> 접수 or 임시저장
 		//1. 임시저장한 프로젝트 다시 임시저장 2. 임시저장한 프로젝트 접수 3. 접수한 프로젝트 수정

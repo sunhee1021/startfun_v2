@@ -70,7 +70,6 @@ public class MyPageAjaxController {
 	//후기작성완료
 	@RequestMapping(value = "/writeReviewDone.do", method = RequestMethod.POST)
 	public Map<String , Integer> writeReview(int project_no, @RequestParam("scoreArr[]") String[] scoreArr, int support_no, Principal principal) {
-	 	System.out.println(project_no +" "+ scoreArr +" "+ support_no);
 		
 		Map<String , Integer> mapResult = new HashMap<String, Integer>();
 		

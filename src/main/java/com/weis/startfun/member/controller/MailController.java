@@ -111,8 +111,6 @@ public class MailController {
 			mv.setViewName("joinus/register");
 			mv.addObject("emailAuthCheck", emailAuthCheck);
 
-			System.out.println("email=" + emailAuthCheck);
-			System.out.println("dice=" + dice);
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out_equals = response.getWriter();
 			out_equals.println("<script>alert('인증번호가 일치하였습니다. 회원가입창으로 이동합니다.');</script>");

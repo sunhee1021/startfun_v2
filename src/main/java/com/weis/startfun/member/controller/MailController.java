@@ -83,7 +83,7 @@ public class MailController {
 			mailSender.send(message);
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 
 		ModelAndView mv = new ModelAndView(); // ModelAndView로 보낼 페이지를 지정하고, 보낼 값을 지정한다.
@@ -167,7 +167,7 @@ public class MailController {
 			mailSender.send(message);
 
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.getStackTrace();
 		}
 
 		ModelAndView mv = new ModelAndView(); // ModelAndView로 보낼 페이지를 지정하고, 보낼 값을 지정한다.

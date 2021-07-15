@@ -65,7 +65,6 @@ public class MyPageService {
 			String filename = member.getMember_file().getOriginalFilename();
 			String path = request.getServletContext().getRealPath("/upload");
 			String fpath = path +"\\" +filename;
-			System.out.println(fpath);
 			
 			FileOutputStream fs = null;
 			try {
@@ -158,7 +157,6 @@ public class MyPageService {
 	//팔로워 리스트
 	public List<FollowerVO> getFollowerList(String email) {
 		
-		System.out.println(email);
 		List<FollowerVO> followerList = null;
 		
 		try {
@@ -362,7 +360,6 @@ public class MyPageService {
 			String filename = joinInvest.getBond_file().getOriginalFilename();
 			String path = request.getServletContext().getRealPath("/upload");
 			String fpath = path +"\\" +filename;
-			System.out.println(fpath);
 			
 			FileOutputStream fs = null;
 			try {

@@ -68,7 +68,7 @@ public class NoticeService {
 			NoticeDAO noticedao = sqlsession.getMapper(NoticeDAO.class);
 			result = noticedao.getNoticeCount();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 		return result;
 	}
@@ -81,7 +81,7 @@ public class NoticeService {
 			NoticeDAO noticedao = sqlsession.getMapper(NoticeDAO.class);
 			result = noticedao.searchNoticeCount();
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 		return result;
 	}
@@ -94,7 +94,7 @@ public class NoticeService {
 			NoticeDAO noticedao = sqlsession.getMapper(NoticeDAO.class);
 			notice = noticedao.getNotice(notice_no);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 		return notice;
 	}
@@ -117,7 +117,7 @@ public class NoticeService {
 			NoticeDAO noticedao = sqlsession.getMapper(NoticeDAO.class);
 			notice = noticedao.getNotice(notice_no);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 		return notice;
 	}

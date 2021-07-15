@@ -41,15 +41,12 @@ public class JoinController {
 
 	@RequestMapping(value = "companyregister.do", method = RequestMethod.POST)
 	public String companyJoin(MemberVO member) throws ClassNotFoundException, SQLException {
-		System.out.println(member.toString());
 
 		int result = 0;
 		String viewpage = "";
 		member.setMember_password(this.bCryptPasswordEncoder.encode(member.getMember_password()));
 		result = service.companyInsertMember(member);
 		result = service.insert_company_auth(member);
-
-		System.out.println("result" + result);
 
 		if (result > 0) {
 			viewpage = "redirect:/startfun/index.do";

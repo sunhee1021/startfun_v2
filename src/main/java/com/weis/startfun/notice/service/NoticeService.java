@@ -35,7 +35,7 @@ public class NoticeService {
 			NoticeDAO noticedao = sqlsession.getMapper(NoticeDAO.class);
 			list = noticedao.getNotices(cri);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 		return list;
 	}

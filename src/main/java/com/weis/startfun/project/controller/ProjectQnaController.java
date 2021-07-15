@@ -37,7 +37,6 @@ public class ProjectQnaController {
 	@ResponseBody
 	public int insertQna(@ModelAttribute("qna") ProjectQnaVO qna, String qna_email){
 		//String email = (String) session.getAttribute(qna_email);
-		System.out.println("qna email : "+qna_email);
 		qna.setQna_email(qna_email);
 		return service.qnawrite(qna);
 	}

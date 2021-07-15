@@ -72,9 +72,7 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 		
 		// 헤더에 저장 될 세션 - 알림용
 		if(message.getPayload().equals("alarm")) {
-			System.out.println("알림용 handleTextMessage");
 			memberSessionList.put(session, userEmail);
-			System.out.println(memberSessionList);
 		} 
 		
 		// 채팅 시
@@ -106,8 +104,6 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 			// Map<WebSocketSession, String> sessionList
 			sessionList.put(session, chatRoom.getRoom_id());
 			
-			// 확인용
-			System.out.println("채팅 세션 목록에 채팅방 생성");
 		}
 		
 		// 채팅방이 존재하고, 처음 들어왔고, DB에서의 채팅방이 있을 때

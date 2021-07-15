@@ -52,10 +52,8 @@ public class JoinController {
 		System.out.println("result" + result);
 
 		if (result > 0) {
-			System.out.println("가입성공");
 			viewpage = "redirect:/startfun/index.do";
 		} else {
-			System.out.println("가입실패");
 			viewpage = "join.do";
 		}
 
@@ -72,7 +70,6 @@ public class JoinController {
 
 	@RequestMapping(value = "register.do", method = RequestMethod.POST)
 	public String join(MemberVO member) throws ClassNotFoundException, SQLException {
-		System.out.println(member.toString());
 
 		int result = 0;
 		String viewpage = "";
@@ -80,13 +77,9 @@ public class JoinController {
 		result = service.insertMember(member);
 		result = service.insert_member_auth(member);
 
-		System.out.println("result" + result);
-
 		if (result > 0) {
-			System.out.println("가입성공");
 			viewpage = "redirect:/startfun/index.do";
 		} else {
-			System.out.println("가입실패");
 			viewpage = "join.do";
 		}
 
@@ -97,7 +90,6 @@ public class JoinController {
 	// 중복체크
 	@RequestMapping(value = "idcheck.do", method = RequestMethod.POST)
 	public void idcheck(@RequestParam("member_email") String member_email, HttpServletResponse response) {
-		System.out.println("email" + member_email);
 		ObjectMapper mapper = new ObjectMapper();
 		int result = service.idCheck(member_email);
 		try {
@@ -110,7 +102,6 @@ public class JoinController {
 	// 중복체크
 	@RequestMapping(value = "companyIdCheck.do", method = RequestMethod.POST)
 	public void companyIdCheck(@RequestParam("member_email") String company_email, HttpServletResponse response) {
-		System.out.println("email" + company_email);
 		ObjectMapper mapper = new ObjectMapper();
 		int result = service.companyIdCheck(company_email);
 		try {

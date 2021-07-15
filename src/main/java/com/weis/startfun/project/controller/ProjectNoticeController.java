@@ -31,7 +31,6 @@ public class ProjectNoticeController {
 		
 		List<ProjectNoticeVO> list = nservice.projectList(project_no);
 		model.addAttribute("list", list);
-		System.out.println("프로젝트 공지 목록: "+list);
 		return list;
 	}
 	
@@ -40,7 +39,6 @@ public class ProjectNoticeController {
 	@ResponseBody
 	public int projectNoticeAdd(@ModelAttribute("proNotice") ProjectNoticeVO proNotice) {
 		int result = nservice.projectInsert(proNotice);
-		System.out.println("프로젝트 공지 등록 : "+result);
 		return result;
 	}
 	
@@ -63,7 +61,6 @@ public class ProjectNoticeController {
 	@RequestMapping(value = "projectNoticeUp.do")
 	@ResponseBody
 	public int projectNoticeUp(@ModelAttribute("notice") ProjectNoticeVO notice) {
-		System.out.println("controller단");
 		return nservice.projectUpdate(notice);
 	}
 	

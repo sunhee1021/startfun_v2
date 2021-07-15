@@ -58,19 +58,6 @@
     <!-- config파일 자동 로드 location="classpath:database.properties"  /!-->
     <context:property-placeholder location="/config/*.properties" />
 
-	<!-- google  -->
-	<bean id="googleConnectionFactory"
-		class="org.springframework.social.google.connect.GoogleConnectionFactory">
-		<constructor-arg value="843718171521-i18js7vrotk6sjfr3at9r15pevc3ae7o.apps.googleusercontent.com" />
-		<constructor-arg value="J6FOPIxzUB4x9Ugi_Bwe1Q1E" />
-	</bean>
-
-	<bean id="googleOAuth2Parameters"
-		class="org.springframework.social.oauth2.OAuth2Parameters">
-		<property name="scope" value="https://www.googleapis.com/auth/plus.login" />
-		<property name="redirectUri" value="http://localhost:8090/startfun/" />
-	</bean>
-
 	<!-- 이메일 인증 -->
 	<bean id="mailSender"
 		class="org.springframework.mail.javamail.JavaMailSenderImpl">

@@ -33,8 +33,9 @@
 
 ## ClassDiagram
 ![ClassDiagram](https://user-images.githubusercontent.com/78418562/125282755-b2b59480-e352-11eb-9256-9fe78bf18590.png)
-> project 클래스와  support · invest · reward 클래스가 연관관계로 이루어져 있습니다. 이 부분에 트랜젝션을 사용하여 프로젝트 삭제 시 연관된 모든 테이블의 데이터가 삭제되도록 처리하였습니다.
-#### (Transaction : project / support / reward를 하나의 단위로 묶은 후 insert 과정에서 오류 발생 시 rollback 되도록 처리)
+> project 클래스와  support · invest · reward 클래스가 연관관계로 이루어져 있습니다.
+
+#### (Transaction 반영 : project / support / reward를 하나의 단위로 묶은 후 insert 과정에서 오류 발생 시 rollback 되도록 처리)
 
 <br>
 
@@ -149,7 +150,7 @@ end;
 
 <br>
 
-## 스타트 펀 3가지 솔루션
+## 솔루션
 ![solution](https://user-images.githubusercontent.com/78418562/125309958-21075080-e36d-11eb-8a1a-e0f234f46153.jpg)
 > 리워드 품질이나 프로젝트 마감 후 사후 처리에 관한 제도가 미흡한 기존 플랫폼의 문제점을 해결하기 위한 솔루션을 구현하였습니다.
 #### 스타트 펀만의 3가지 솔루션

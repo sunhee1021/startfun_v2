@@ -68,8 +68,6 @@ public class ChatController {
 	@RequestMapping("createChat.do")
 	public String createChat(ChatRoomVO room, Principal principal, String user_name, String master_email, String project_no) {
 		
-		System.out.println("master_email : "+master_email);
-		
 		String user_email = principal.getName();
 		
 		MemberVO user = mypageService.editMember(user_email);
@@ -90,12 +88,9 @@ public class ChatController {
 		
 		// DB에 방이 없을 때
 		if(exist == null) {
-			System.out.println("방이 없음");
 			// 방 만들고 방 번호 가져오기
 			int result = chatService.createChat(room);
 			if(result != 0) {	// 채팅방 생성 - 채팅방 번호 반환
-				System.out.println("방 생성");
-				System.out.println("방 번호: "+room.getRoom_id());
 				return Integer.toString(room.getRoom_id());
 			} else {			// 채팅방 생성 못함 - 에러
 				return "fail";
@@ -103,7 +98,6 @@ public class ChatController {
 		}
 		// DB에 방이 있을 때
 		else {
-			System.out.println("방이 있다");
 			return Integer.toString(exist.getRoom_id());	// 방 번호
 		}
 	}

@@ -180,9 +180,8 @@ public class JoinSupportController {
 		
 		//물리적 경로 얻기
 	    String savepath = "upload";
-		String downloadpath = request.getSession().getServletContext().getRealPath(savepath);
+	    String downloadpath = request.getSession().getServletContext().getRealPath(savepath);
 	    String FilePath = downloadpath + "\\" + project_file;
-	    System.out.println(FilePath);
 	    byte[] fileByte = FileUtils.readFileToByteArray(new File(FilePath));
 	    
         response.setContentType("application/octet-stream");

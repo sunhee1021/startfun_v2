@@ -63,8 +63,6 @@ public class MyPageController {
 	@RequestMapping(value="account.do", method=RequestMethod.GET)
 	public ModelAndView editMember(ModelAndView mv, Principal principal) {
 		
-		System.out.println(principal.getName());
-		
 		MemberVO member = mypageService.editMember(principal.getName());
 		mv.addObject("member", member);
 		mv.setViewName("mypage/updateMember");
@@ -77,7 +75,6 @@ public class MyPageController {
 	public String editMember(MemberVO member, HttpServletRequest request) {
 		
 		member.setMember_password(bCryptPasswordEncoder.encode(member.getMember_password()));
-		System.out.println(member.getMember_password());
 		
 		String url = mypageService.editMember(member, request);
 		
@@ -87,7 +84,6 @@ public class MyPageController {
 	//마이페이지 계정정보 탈퇴
 	@RequestMapping(value="withdraw.do")
 	public String withdrawMember(Principal principal, HttpSession sessoin) {
-		System.out.println(principal.getName());
 		String url = mypageService.withdrawMember(principal.getName(), sessoin);
 		return url;
 	}
@@ -173,7 +169,6 @@ public class MyPageController {
 	@RequestMapping(value="sponsorstatus.do")
 	public String changeRewardStatus(String[] support_no, String reward_status, int project_no) {
 		
-		System.out.println(support_no);
 		String url = mypageService.changeRewardStatus(support_no, reward_status, project_no);
 		
 		return url;
@@ -221,7 +216,6 @@ public class MyPageController {
 	@RequestMapping(value="sponsor/uploadbond.do", method=RequestMethod.POST)
 	public String uploadInvestBond(JoinInvestVO joinInvest , HttpServletRequest request) {
 		
-		System.out.println(joinInvest);
 		String url = mypageService.uploadInvestBond(joinInvest, request);
 		
 		return url;
@@ -297,7 +291,6 @@ public class MyPageController {
 	    String savepath = "upload";
 		String downloadpath = request.getSession().getServletContext().getRealPath(savepath);
 	    String FilePath = downloadpath + "\\" + invest_bond;
-	    System.out.println(FilePath);
 	    byte[] fileByte = FileUtils.readFileToByteArray(new File(FilePath));
 	    
         response.setContentType("application/octet-stream");

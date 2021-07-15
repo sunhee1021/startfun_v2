@@ -58,8 +58,6 @@ public class MailController {
 	@RequestMapping(value = "Auth.do", method = RequestMethod.POST)
 	public ModelAndView sendEmail(HttpServletRequest request, String member_email, HttpServletResponse response) throws IOException {
 		
-		System.out.println("email= " + member_email);
-
 		Random ran = new Random();
 		int dice = ran.nextInt(4589362) + 49311;
 		
@@ -91,8 +89,6 @@ public class MailController {
 		ModelAndView mv = new ModelAndView(); // ModelAndView로 보낼 페이지를 지정하고, 보낼 값을 지정한다.
 		mv.setViewName("/joinus/emailAuthCheck_View"); // 뷰의이름
 		mv.addObject("dice", dice);
-		System.out.println(dice);
-		System.out.println("mv : " + mv);
 
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out_email = response.getWriter();
@@ -111,8 +107,6 @@ public class MailController {
 		mv.setViewName("joinus/register");
 		mv.addObject("emailAuthCheck", emailAuthCheck);
 		
-		System.out.println(member_email);
-
 		if (emailAuthCheck.equals(dice)) {
 			mv.setViewName("joinus/register");
 			mv.addObject("emailAuthCheck", emailAuthCheck);
@@ -151,7 +145,6 @@ public class MailController {
 	@RequestMapping(value = "companyAuth.do", method = RequestMethod.POST)
 	public ModelAndView companySendEmail(HttpServletRequest request, String member_email, HttpServletResponse response)
 			throws IOException {
-		System.out.println("email= " + member_email);
 		Random ran = new Random();
 		int dice = ran.nextInt(4589362) + 49311;
 		Mail mail = new Mail();
@@ -182,8 +175,6 @@ public class MailController {
 		ModelAndView mv = new ModelAndView(); // ModelAndView로 보낼 페이지를 지정하고, 보낼 값을 지정한다.
 		mv.setViewName("/joinus/companyEmailAuthCheck_View"); // 뷰의이름
 		mv.addObject("dice", dice);
-
-		System.out.println("mv : " + mv);
 
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out_email = response.getWriter();

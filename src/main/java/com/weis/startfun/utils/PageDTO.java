@@ -46,9 +46,6 @@ public class PageDTO {
 		
 		//다음계산 realEnd가 끝 번호(endPage)보다 큰 경우 존재
 		this.next = this.endPage < realEnd;
-		
-		System.out.println("realEnd: "+realEnd);
-		System.out.println("endPage: "+endPage);
 	}
 	
 }

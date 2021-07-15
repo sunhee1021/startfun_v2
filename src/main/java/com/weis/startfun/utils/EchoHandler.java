@@ -40,7 +40,6 @@ public class EchoHandler extends TextWebSocketHandler {
 		//JSON --> Map으로 변환
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> mapReceive = objectMapper.readValue(message.getPayload(), Map.class);
-		System.out.println("message.getPlayload() : "+message.getPayload());
 		
 		switch (mapReceive.get("cmd")) {
 		

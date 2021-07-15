@@ -100,8 +100,6 @@ public class ProjectService {
 	public String supportProjectEdit(ProjectVO project, SupportVO support, RewardVO reward, HttpServletRequest request,
 			Principal principal) throws Exception {
 		
-		System.out.println("리워드 : "+reward.toString());
-
 		ProjectDAO projectdao = sqlsession.getMapper(ProjectDAO.class);
 		//파일업로드 처리
 		if(!project.getFiles().isEmpty()) {
@@ -226,16 +224,9 @@ public class ProjectService {
 	//파일업로드
 	public void fileUpload(ProjectVO project, HttpServletRequest request) throws Exception {
 		
-		//넘어온 파일 확인
-		//System.out.println(project.getFiles().toString());
-		
-		//project 객체 확인
-		//System.out.println(project.toString());
 		
 		List<CommonsMultipartFile> files = project.getFiles();
 		List<String> filenames = new ArrayList<String>(); //파일명관리
-		
-		//System.out.println("파일사이즈: "+files.size());
 		
 		if(files != null && files.size() > 0) {
 			for (CommonsMultipartFile multifile : files) {
@@ -243,15 +234,11 @@ public class ProjectService {
 				String filename = multifile.getOriginalFilename();
 				String path = request.getServletContext().getRealPath("/upload");
 				
-				System.out.println("filename:"+filename);
-				
 				if(!filename.equals("")) {
 					
 					//파일이름변경
 					UUID uuid = UUID.randomUUID();
 					filename = uuid + "_" + multifile.getOriginalFilename();
-					
-					System.out.println("filename:"+filename);
 					
 					//저장경로
 					String fpath = path + "\\" + filename;
@@ -270,8 +257,6 @@ public class ProjectService {
 					//파일이름변경
 					UUID uuid = UUID.randomUUID();
 					filename = uuid + "_" + multifile.getOriginalFilename();
-					
-					System.out.println("filename:"+filename);
 					
 					//저장경로
 					String fpath = path + "\\" + filename;
@@ -387,8 +372,6 @@ public class ProjectService {
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-		
-		System.out.println(projectList);
 		
 		return projectList;
 	}

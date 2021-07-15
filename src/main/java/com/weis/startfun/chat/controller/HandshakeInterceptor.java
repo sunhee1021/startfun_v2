@@ -22,7 +22,6 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 		// Map이 핸들러에게 보내줄 정보를 담는 통이된다.
 		
 		User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		System.out.println("유저 이메일 : "+user.getUsername());
 		
 		map.put("userEmail", user.getUsername());
 		//map.put("userEmail", "hong");

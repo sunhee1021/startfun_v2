@@ -75,9 +75,7 @@ public class AdminMemberController {
 	// 관리자 개인회원 상세
 	@RequestMapping(value = "/userEdit.do", method = RequestMethod.GET)
 	public String getUserList(@RequestParam("member_email") String email, Model model) {
-		/* System.out.println("principal=" + principal); */
 		MemberVO vo = service.getUserList(email);
-		System.out.println("vo=" + vo);
 		model.addAttribute("list", vo);
 
 		return "admin/userEdit";
@@ -109,9 +107,7 @@ public class AdminMemberController {
 	// 관리자 법인회원 상세
 	@RequestMapping(value = "/companyEdit.do", method = RequestMethod.GET)
 	public String getCompanyList(@RequestParam("member_email") String email, Model model) {
-		/* System.out.println("principal=" + principal); */
 		MemberVO vo = service.getCompanyList(email);
-		System.out.println("vo=" + vo);
 		model.addAttribute("list", vo);
 
 		return "admin/companyEdit";
@@ -133,7 +129,6 @@ public class AdminMemberController {
 			throws IOException {
 		List<MemberVO> vo = new ArrayList<MemberVO>();
 		vo = service.searchUser(email);
-		System.out.println("vo" + vo);
 		JSONArray array = JSONArray.fromObject(vo);
 		response.setContentType("application/x-json; charset=UTF-8");
 		response.getWriter().print(array);
@@ -145,7 +140,6 @@ public class AdminMemberController {
 			throws IOException {
 		List<MemberVO> vo = new ArrayList<MemberVO>();
 		vo = service.searchUserName(name);
-		System.out.println("vo" + vo);
 		JSONArray array = JSONArray.fromObject(vo);
 		response.setContentType("application/x-json; charset=UTF-8");
 		response.getWriter().print(array);
@@ -178,7 +172,6 @@ public class AdminMemberController {
 	// 중복체크
 	@RequestMapping(value = "idcheck.do", method = RequestMethod.POST)
 	public void idcheck(@RequestParam("member_email") String member_email, HttpServletResponse response) {
-		System.out.println("email" + member_email);
 		ObjectMapper mapper = new ObjectMapper();
 		int result = service.idCheck(member_email);
 		try {
@@ -191,7 +184,6 @@ public class AdminMemberController {
 	// 중복체크
 	@RequestMapping(value = "companyIdCheck.do", method = RequestMethod.POST)
 	public void companyIdCheck(@RequestParam("member_email") String company_email, HttpServletResponse response) {
-		System.out.println("email" + company_email);
 		ObjectMapper mapper = new ObjectMapper();
 		int result = service.companyIdCheck(company_email);
 		try {

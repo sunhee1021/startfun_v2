@@ -54,7 +54,6 @@ public class AdminMemberService {
 
 	// 개인회원 상세
 	public MemberVO getUserList(String email) {
-		System.out.println("email= " + email);
 		AdminDAO dao = sqlsession.getMapper(AdminDAO.class);
 		MemberVO vo = dao.getList(email);
 
@@ -65,13 +64,11 @@ public class AdminMemberService {
 	public String userEdit(MemberVO vo, HttpServletRequest request) {
 		AdminDAO dao = sqlsession.getMapper(AdminDAO.class);
 		int result = dao.updateUser(vo);
-		System.out.println("result=" + result);
 		return "redirect:userEdit.do?member_email=" + vo.getMember_email();
 	}
 
 	// 법인회원 상세
 	public MemberVO getCompanyList(String email) {
-		System.out.println("email= " + email);
 		AdminDAO dao = sqlsession.getMapper(AdminDAO.class);
 		MemberVO vo = dao.getCompanyList(email);
 		return vo;
@@ -81,7 +78,6 @@ public class AdminMemberService {
 	public String updateCompany(MemberVO vo, HttpServletRequest request) {
 		AdminDAO dao = sqlsession.getMapper(AdminDAO.class);
 		int result = dao.updateCompany(vo);
-		System.out.println("result=" + result);
 		return "redirect:companyEdit.do?member_email=" + vo.getMember_email();
 	}
 

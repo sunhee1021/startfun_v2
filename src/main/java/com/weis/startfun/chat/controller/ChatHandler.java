@@ -43,14 +43,12 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) throws Exception {
 		i++;
-		System.out.println(session.getId() + " 연결 성공 => 총 접속 인원 : " + i + "명");
 	}
 
 	// websocket 연결 종료 시
 	@Override
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		i--;
-		System.out.println(session.getId() + " 연결 종료 => 총 접속 인원 : "+i+"명");
 		// sessionList에 session이 있다면
 		if(sessionList.get(session) != null) {
 			// 해당 session의 방 번호를 가져와서, 방을 찾고, 그 방의 ArrayList<session>에서 해당 session을 지운다.
@@ -71,7 +69,6 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 		// HandshakeInterceptor 에서 저장했던 회원 이메일
 		Map<String, Object> map = session.getAttributes();
 		String userEmail = (String) map.get("userEmail");
-		System.out.println("유저 이메일 [handleTextMessage] : "+userEmail);
 		
 		// 헤더에 저장 될 세션 - 알림용
 		if(message.getPayload().equals("alarm")) {
@@ -82,11 +79,9 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 		
 		// 채팅 시
 		else {
-		System.out.println("채팅 handleTextMessage");
 		
 		// 전달받은 메세지
 		String msg = message.getPayload();
-		System.out.println("전달 받은 메시지 : "+msg);
 		
 		// Json객체 -> Java객체
 		// 출력값 : [room_id=123, messageId=null, message=asd, name=홍길동, email=user01@gmail.com, unread_count=0]
@@ -94,10 +89,7 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 		
 		// 받은 메세지에 담긴 room_id로 해당 채팅방을 찾아온다.
 		ChatRoomVO chatRoom = chatservice.selectChatRoom(chatMessage.getRoom_id());
-		System.out.println("chatRoom : "+chatRoom);
 		
-		System.out.println("RoomList.get(chatRoom.getRoom_id()) : "+RoomList.get(chatRoom.getRoom_id()));
-		System.out.println(chatMessage.getMessage().equals("ENTER-CHAT"));
 		// 채팅 세션 목록에 채팅방이 존재하지 않고, 처음 들어왔고(입장 시 message="ENTER_CHAT"로 보냄), DB에서의 채팅방이 있을 때
 		// 채팅 세션 목록에 채팅방 생성
 		if(RoomList.get(chatRoom.getRoom_id()) == null && chatMessage.getMessage().equals("ENTER-CHAT") && chatRoom != null) {
@@ -127,8 +119,6 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 			// sessionList에 추가
 			sessionList.put(session, chatRoom.getRoom_id());
 			
-			// 확인용
-			System.out.println("생성된 채팅방으로 입장");
 		}
 		
 		// 채팅방이 존재하고, 채팅 메세지를 입력했고, DB에서의 채팅방이 있을 때
@@ -161,25 +151,17 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 				receiver = chatRoom.getUser_email();
 			}
 			
-			System.out.println("1. receiver : "+receiver);
-			
 			/*
 			// value값만 알고있는 상태 -> value값으로 key값을 찾기
 			Set<Map.Entry<WebSocketSession, String>> entries = memberSessionList.entrySet();
 			for (Map.Entry<WebSocketSession, String> entry : entries) {
-				System.out.println("entry.getValue() : "+entry.getValue());
-				System.out.println("entry.getKey() : "+entry.getKey());
 				if(entry.getValue()==receiver) {
-					System.out.println("entry.getValue() : "+entry.getValue());
-					System.out.println("2. receiver : "+receiver);
 					entry.getKey().sendMessage(new TextMessage("알림"));
 				}
 			}
 			*/
 			
 			for ( WebSocketSession sess : memberSessionList.keySet() ) {
-				System.out.println("sess : "+sess);
-				System.out.println("memberSessionList.getKey() : "+memberSessionList.get(sess));
 				if(memberSessionList.get(sess).equals(receiver)) {
 					sess.sendMessage(textMessage);
 				}
@@ -192,12 +174,6 @@ public class ChatHandler extends TextWebSocketHandler implements InitializingBea
 			
 			// DB에 저장한다.
 			int a = chatservice.insertMessage(chatMessage);
-			
-			if(a == 1) {
-				System.out.println("메세지 전송 및 DB 저장 성공");
-			} else {
-				System.out.println("메세지 전송 실패!!! & DB 저장 실패!!");
-			}
 		}
 		}
 	}

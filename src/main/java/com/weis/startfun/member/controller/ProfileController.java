@@ -56,7 +56,6 @@ public class ProfileController {
 		model.addAttribute("followingCt",followingCt);
 		model.addAttribute("following",following);
 		
-		//System.out.println("개설 프로젝트: "+list);
 		return "profile/profile";
 	}
 	

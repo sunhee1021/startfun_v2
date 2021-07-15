@@ -69,8 +69,6 @@ public class ProjectRestController {
 			e1.printStackTrace();
 		}
 		
-		System.out.println("업로드 url"+fpath);
-		
 		return jsonObject.toString();
 	}
 	
@@ -80,15 +78,10 @@ public class ProjectRestController {
 		
 		List<ChatRoomVO> roomList = null;
 		
-		System.out.println("alarmCount");
-		
 		Collection<? extends GrantedAuthority> auth =  SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 		
-		System.out.println("auth : "+auth);
-
 		if (auth != null) {
 			roomList = chatService.selectUnReadRoomCount(principal.getName());
-			System.out.println(roomList);
 			return roomList;
 		} else {
 			return roomList;

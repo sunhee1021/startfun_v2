@@ -31,7 +31,6 @@ public class NoticeReplyController {
 	@RequestMapping(value="", method={RequestMethod.POST})
 	public int insertReply(@RequestBody NoticeReplyVO reply, Principal principal) {
 		
-		System.out.println(principal.getName());
 		reply.setReply_email(principal.getName());
 		return service.replywrite(reply);
 	}
@@ -49,7 +48,6 @@ public class NoticeReplyController {
 	@RequestMapping(value = "/{reply_no}", method={RequestMethod.PUT})
 	public ResponseEntity<String> replyEdit(@PathVariable int reply_no, @RequestBody NoticeReplyVO reply) {
 		
-		System.out.println(reply);
 		ResponseEntity<String> entity = null;
 		
 		try {
@@ -60,7 +58,6 @@ public class NoticeReplyController {
 			entity = new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 		
-		System.out.println(entity);
 		return entity;
 	}
 	
@@ -84,7 +81,6 @@ public class NoticeReplyController {
 	public List<NoticeReplyVO> replyList(@RequestParam int notice_no){
 		
 		List<NoticeReplyVO> list = service.getReply(notice_no);
-		System.out.println("list controller 값: "+list);
 		return list;
 	}
 	

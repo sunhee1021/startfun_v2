@@ -140,7 +140,7 @@ public class JoinService {
 			mailSender.send(message);
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			e.getStackTrace();
 		}
 		
 		

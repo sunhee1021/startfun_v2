@@ -62,7 +62,6 @@ public class NoticeController {
 		
 		model.addAttribute("notice",notice);
 		model.addAttribute("reply",reply);
-		System.out.println("reply: "+reply);
 		return "notice/noticeDetail";
 	}
 	
